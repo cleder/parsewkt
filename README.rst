@@ -1,3 +1,7 @@
-The WKT Parser was gernertated using grako https://pypi.python.org/pypi/grako
+The WKT Parser was gernerated using grako https://pypi.python.org/pypi/grako
 
-the ebnf file is the translation of https://github.com/ahinz/postgis/blob/master/doc/bnf-wkt.txt
+The ebnf file is the translation of https://github.com/ahinz/postgis/blob/master/doc/bnf-wkt.txt .
+
+The bnf to ebnf conversion was guided by http://stackoverflow.com/questions/14922242/how-to-convert-bnf-to-ebnf
+
+

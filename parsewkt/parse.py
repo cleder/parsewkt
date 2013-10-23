@@ -12,11 +12,11 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 from grako.parsing import * # @UnusedWildImport
 from grako.exceptions import * # @UnusedWildImport
 
-__version__ = '13.296.14.46.21'
+__version__ = '13.296.16.06.12'
 
-class wktParser(Parser):
+class WktParser(Parser):
     def __init__(self, whitespace=None, nameguard=True, **kwargs):
-        super(wktParser, self).__init__(whitespace=whitespace,
+        super(WktParser, self).__init__(whitespace=whitespace,
             nameguard=nameguard, **kwargs)
 
     @rule_def
@@ -518,11 +518,11 @@ class wktParser(Parser):
 
 
 
-class wktSemanticParser(CheckSemanticsMixin, wktParser):
+class WktSemanticParser(CheckSemanticsMixin, WktParser):
     pass
 
 
-class wktSemantics(object):
+class WktSemantics(object):
     def well_known_text_representation(self, ast):
         return ast
 
@@ -686,7 +686,7 @@ def main(filename, startrule, trace=False):
     import json
     with open(filename) as f:
         text = f.read()
-    parser = wktParser(parseinfo=False)
+    parser = WktParser(parseinfo=False)
     ast = parser.parse(text, startrule, filename=filename, trace=trace)
     print('AST:')
     print(ast)
@@ -701,11 +701,11 @@ if __name__ == '__main__':
     class ListRules(argparse.Action):
         def __call__(self, parser, namespace, values, option_string):
             print('Rules:')
-            for r in wktParser.rule_list():
+            for r in WktParser.rule_list():
                 print(r)
             print()
             sys.exit(0)
-    parser = argparse.ArgumentParser(description="Simple parser for wkt.")
+    parser = argparse.ArgumentParser(description="Simple parser for Wkt.")
     parser.add_argument('-l', '--list', action=ListRules, nargs=0,
                         help="list all rules and exit")
     parser.add_argument('-t', '--trace', action='store_true',
