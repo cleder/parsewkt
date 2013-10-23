@@ -170,5 +170,5 @@ empty_set = "EMPTY";
 z_m = "ZM" | "Z" | "M";
 left_paren = "(";
 right_paren = ")";
-number = ?/[0-9]+/? .
+number = ?/[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?/? ;
 comma =',';

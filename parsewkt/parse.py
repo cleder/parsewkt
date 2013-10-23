@@ -12,7 +12,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 from grako.parsing import * # @UnusedWildImport
 from grako.exceptions import * # @UnusedWildImport
 
-__version__ = '13.296.16.06.12'
+__version__ = '13.296.16.54.38'
 
 class WktParser(Parser):
     def __init__(self, whitespace=None, nameguard=True, **kwargs):
@@ -510,7 +510,7 @@ class WktParser(Parser):
 
     @rule_def
     def _number_(self):
-        self._pattern(r'[0-9]+')
+        self._pattern(r'[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?')
 
     @rule_def
     def _comma_(self):
