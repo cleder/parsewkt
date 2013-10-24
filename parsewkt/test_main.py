@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 from .parse import WktParser
+from .wkt import from_wkt
 
 cc0 = "COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,0 1))"
 cc1 = """COMPOUNDCURVE(CIRCULARSTRING(
@@ -48,24 +49,10 @@ gc1 = """GEOMETRYCOLLECTION(
           POLYGON((0 0, 0 9, 9 9, 9 0, 0 0), (5 5, 5 6, 6 6, 5 5)),
           MULTIPOLYGON(((0 0, 0 9, 9 9, 9 0, 0 0), (5 5, 5 6, 6 6, 5 5)))
         )"""
-gc2 = """GEOMETRYCOLLECTION(MULTIPOINT(3433276.43 5795308.93,
-    3428545.3 5795827.75,3431576.99 5799084.19,3431724.2 5797152.59,
-    3431984.2 5796564.79,3435147.61 5797649.58,3434660.86 5796941.74,
-    3434674.52 5797030.54,3435714.36 5797022.6,3436368.88 5796951.04,
-    3436730.03 5796768.6,3435538.55 5796267.1,3435847.22 5795917.96,
-    3434312.09 5794846.02,3433121.69 5793670.73,3433176.36 5793489.29,
-    3434316.04 5793940.09,3433222.92 5793040.49,3433416.13 5792891.62,
-    3430717.47 5792600.58,3435384.08 5792877.68,3435229.15 5792177.25,
-    3435120 5792319.07,3435088.72 5792111.21,3434484.89 5792110.2,
-    3435777.91 5792419.49,3435717.37 5794318.12,3436895.13 5794569.43,
-    3437621.86 5793931.6,3435597.14 5793467.9,3435246.51 5793394.63,
-    3434722.1 5793374.87,3434712.16 5793810.3,3434773.28 5793816.87,
-    3434629.91 5793855.31,3434992.34 5794140.1,3434927.13 5794252.29,
-    3434958.58 5794286.16,3435120.48 5794163.36,3435850.1 5791727.49,
-    3435930.75 5791636.32,3436268.87 5791882.68,3437110.23 5791664.12,
-    3435960.34 5790928.2,3433545.81 5789755.43,3439096.86 5790884.26,
-    3438576.87 5795046.69,3438396.95 5794858.59,3438193.25 5794695.6,
-    3438447.92 5796130.77,3440688.22 5793670.37),
+gc2 = """GEOMETRYCOLLECTION(MULTIPOINT((3433276.43 5795308.93),
+    (3428545.3 5795827.75), (3431576.99 5799084.19), (3431724.2 5797152.59),
+    (3431984.2 5796564.79), (3435147.61 5797649.58), (3434660.86 5796941.74)
+    ),
     MULTILINESTRING((3429562.6 5799490.68,3429750.99 5799199.87,
     3429825.45 5799078.39,3429901.8 5798961.45,3429995.54 5798822.93,
     3430072.89 5798719.46,3430216 5798558.95,3430272.08 5798489.33,
@@ -100,6 +87,7 @@ ls1 = """LINESTRING (
                 9 0,
                 0 0
             )"""
+
 ls2 = """LINESTRING(3429562.6 5799490.68,3429750.99 5799199.87,3429825.45
     5799078.39,3429901.8 5798961.45,3429995.54 5798822.93,3430072.89
     5798719.46,3430216 5798558.95,3430272.08 5798489.33,3430393.87
@@ -110,6 +98,8 @@ ls2 = """LINESTRING(3429562.6 5799490.68,3429750.99 5799199.87,3429825.45
     5798061.18,3431366.56 5798056.09,3431474.07 5798044.47,3431568.02
     5798028.97,3431644.53 5798012.51)"""
 ls3 = "LINESTRING(0 0 2, 10 0 4, 10 10 6, 0 10 8, 0 0 10)"
+
+
 mc0 = "MULTICURVE((5 5,3 5,3 3,0 3),CIRCULARSTRING(0 0,2 1,2 2))"
 mc1 = """MULTICURVE(
                 (0 0, 3 2),
@@ -125,7 +115,7 @@ mc2 = """MULTICURVE((
     0.26794919243112270647255365849413 1 3 -2,
     0.5857864376269049511983112757903 1.4142135623730950488016887242097 1 2))
     """
-mc3 = """MULTICURVEM((
+mc3 = """MULTICURVE M((
     5 5 3,
     3 5 2,
     3 3 1,
@@ -163,7 +153,7 @@ mls3 = """MULTILINESTRING((0 0 2, 10 0 4, 10 10 6, 0 10 8, 0 0 10),
     (2 2 1, 2 4 2, 4 4 3, 4 2 4, 2 2 5),
     (5 5 10, 5 7 9, 7 7 8, 7 5 7, 5 5 6))"""
 #3dm
-mls4 = """MULTILINESTRINGM((0 0 2, 10 0 4, 10 10 6, 0 10 8, 0 0 10),
+mls4 = """MULTILINESTRING M((0 0 2, 10 0 4, 10 10 6, 0 10 8, 0 0 10),
     (2 2 1, 2 4 2, 4 4 3, 4 2 4, 2 2 5),
     (5 5 10, 5 7 9, 7 7 8, 7 5 7, 5 5 6))"""
 #4dm
@@ -192,7 +182,7 @@ mp2 = """MULTIPOINT(3433276.43 5795308.93,3428545.3 5795827.75,3431576.99
     5794858.59,3438193.25 5794695.6,3438447.92 5796130.77,
     3440688.22 5793670.37)"""
 mp3 = "MULTIPOINTM(1 2 8, 2 2 5, 2 1 0)"
-mp4 = "MULTIPOINTM(1 2 2)"
+mp4 = "MULTIPOINT M((1 2 2))"
 mpoly0 = """MULTIPOLYGON (((30 20, 10 40, 45 40, 30 20)),
     ((15 5, 40 10, 10 20, 5 10, 15 5)))"""
 mpoly1 = """MULTIPOLYGON (((40 40, 20 45, 45 30, 40 40)),
@@ -268,9 +258,10 @@ ms1 = """MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(
 
 
 point_m0 = "POINT M (1 1 80)"
-point_m1 = "POINTM(1 2 4.00001)"
+point_m1 = "POINT M(1 2 4.00001)"
 p0 = "POINT (30 10)"
 p_zm = "POINT ZM (1 1 5 60)"
+p_z = "POINT Z (1 1 5)"
 poly0 = "POLYGON ((30 10, 10 20, 20 40, 40 40, 30 10))"
 poly1 = """POLYGON ((35 10, 10.1 20.0, 15 40, 45 45, 35 10),
     (20 30, 35 35, 30 20, 20 30))"""
@@ -323,7 +314,7 @@ empty_mpoly1 = 'MULTIPOLYGON(EMPTY)'
 empty_gc0 = 'GEOMETRYCOLLECTION EMPTY'
 empty_gc1 = 'GEOMETRYCOLLECTION(EMPTY)'
 empty_gc2 = 'GEOMETRYCOLLECTION((EMPTY))'
-#+++
+
 phs0 = """POLYHEDRALSURFACE(
 ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
 ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
@@ -397,8 +388,8 @@ class ParserTestCase(unittest.TestCase):
         self.assertEqual(ast[0], 'GEOMETRYCOLLECTION')
         ast = parser.parse(gc1, rule_name=start)
         self.assertEqual(ast[0], 'GEOMETRYCOLLECTION')
-        #ast = parser.parse(gc2, rule_name=start)
-        #self.assertEqual(ast[0], 'GEOMETRYCOLLECTION')
+        ast = parser.parse(gc2, rule_name=start)
+        self.assertEqual(ast[0], 'GEOMETRYCOLLECTION')
         ast = parser.parse(gc3, rule_name=start)
         self.assertEqual(ast[0], 'GEOMETRYCOLLECTION')
         ast = parser.parse(gc4, rule_name=start)
@@ -409,6 +400,7 @@ class ParserTestCase(unittest.TestCase):
         self.assertEqual(ast[0], 'GEOMETRYCOLLECTION')
         ast = parser.parse(empty_gc0, rule_name=start)
         self.assertEqual(ast[0], 'GEOMETRYCOLLECTION')
+        self.assertEqual(ast[1], 'EMPTY')
         #ast = parser.parse(empty_gc1, rule_name=start)
         #self.assertEqual(ast[0], 'GEOMETRYCOLLECTION')
         #ast = parser.parse(empty_gc2, rule_name=start)
@@ -426,6 +418,7 @@ class ParserTestCase(unittest.TestCase):
         self.assertEqual(ast[0], 'LINESTRING')
         ast = parser.parse(empty_ls0, rule_name=start)
         self.assertEqual(ast[0], 'LINESTRING')
+        self.assertEqual(ast[1], 'EMPTY')
         #ast = parser.parse(empty_ls1, rule_name=start)
 
     def testMulticurve(self):
@@ -436,8 +429,9 @@ class ParserTestCase(unittest.TestCase):
         self.assertEqual(ast[0], 'MULTICURVE')
         ast = parser.parse(mc2, rule_name=start)
         self.assertEqual(ast[0], 'MULTICURVE')
-        #ast = parser.parse(mc3, rule_name=start)
-        #self.assertEqual(ast[0], 'MULTICURVE')
+        ast = parser.parse(mc3, rule_name=start)
+        self.assertEqual(ast[0], 'MULTICURVE')
+        self.assertEqual(ast[1], 'M')
 
     def testMultilinestring(self):
         parser = WktParser(parseinfo=False)
@@ -449,8 +443,8 @@ class ParserTestCase(unittest.TestCase):
         self.assertEqual(ast[0], 'MULTILINESTRING')
         ast = parser.parse(mls3, rule_name=start)
         self.assertEqual(ast[0], 'MULTILINESTRING')
-        #ast = parser.parse(mls4, rule_name=start)
-        #self.assertEqual(ast[0], 'MULTILINESTRING')
+        ast = parser.parse(mls4, rule_name=start)
+        self.assertEqual(ast[0], 'MULTILINESTRING')
         ast = parser.parse(mls5, rule_name=start)
         self.assertEqual(ast[0], 'MULTILINESTRING')
         ast = parser.parse(empty_mls0, rule_name=start)
@@ -470,12 +464,15 @@ class ParserTestCase(unittest.TestCase):
         #self.assertEqual(ast[0], 'MULTIPOINT')
         #ast = parser.parse(mp3, rule_name=start)
         #self.assertEqual(ast[0], 'MULTIPOINT')
-        #ast = parser.parse(mp4, rule_name=start)
-        #self.assertEqual(ast[0], 'MULTIPOINT')
+        ast = parser.parse(mp4, rule_name=start)
+        self.assertEqual(ast[0], 'MULTIPOINT')
+        self.assertEqual(ast[1], 'M')
         ast = parser.parse(empty_mp0, rule_name=start)
         self.assertEqual(ast[0], 'MULTIPOINT')
+        self.assertEqual(ast[1], 'EMPTY')
         ast = parser.parse(empty_mp1, rule_name=start)
         self.assertEqual(ast[0], 'MULTIPOINT')
+        self.assertEqual(ast[1], ['(', 'EMPTY', [], ')'])
 
 
     def testMultipolygon(self):
@@ -490,10 +487,13 @@ class ParserTestCase(unittest.TestCase):
         self.assertEqual(ast[0], 'MULTIPOLYGON')
         ast = parser.parse(mpoly_empty, rule_name=start)
         self.assertEqual(ast[0], 'MULTIPOLYGON')
+        self.assertEqual(ast[1], 'EMPTY')
         ast = parser.parse(empty_mpoly0, rule_name=start)
         self.assertEqual(ast[0], 'MULTIPOLYGON')
+        self.assertEqual(ast[1], 'EMPTY')
         ast = parser.parse(empty_mpoly1, rule_name=start)
         self.assertEqual(ast[0], 'MULTIPOLYGON')
+        self.assertEqual(ast[1], ['(', 'EMPTY', [], ')'])
 
     def testMultisurface(self):
         parser = WktParser(parseinfo=False)
@@ -506,16 +506,24 @@ class ParserTestCase(unittest.TestCase):
         parser = WktParser(parseinfo=False)
         ast = parser.parse(point_m0, rule_name=start)
         self.assertEqual(ast[0], 'POINT')
-        #ast = parser.parse(point_m1, rule_name=start)
-        #self.assertEqual(ast[0], 'POINT')
+        self.assertEqual(ast[1], 'M')
+        ast = parser.parse(point_m1, rule_name=start)
+        self.assertEqual(ast[0], 'POINT')
+        self.assertEqual(ast[1], 'M')
         ast = parser.parse(p0, rule_name=start)
         self.assertEqual(ast[0], 'POINT')
+        ast = parser.parse(p_z, rule_name=start)
+        self.assertEqual(ast[0], 'POINT')
+        self.assertEqual(ast[1], 'Z')
         ast = parser.parse(p_zm, rule_name=start)
         self.assertEqual(ast[0], 'POINT')
+        self.assertEqual(ast[1], 'ZM')
         ast = parser.parse(empty_p0, rule_name=start)
         self.assertEqual(ast[0], 'POINT')
-        ast = parser.parse(empty_p0, rule_name=start)
-        self.assertEqual(ast[0], 'POINT')
+        self.assertEqual(ast[1], 'EMPTY')
+        #ast = parser.parse(empty_p1, rule_name=start)
+        #self.assertEqual(ast[0], 'POINT')
+        #self.assertEqual(ast[1], 'EMPTY')
 
     def testPolygon(self):
         parser = WktParser(parseinfo=False)
@@ -531,8 +539,10 @@ class ParserTestCase(unittest.TestCase):
         self.assertEqual(ast[0], 'POLYGON')
         ast = parser.parse(empty_poly0, rule_name=start)
         self.assertEqual(ast[0], 'POLYGON')
+        self.assertEqual(ast[1], 'EMPTY')
         ast = parser.parse(empty_poly1, rule_name=start)
         self.assertEqual(ast[0], 'POLYGON')
+        self.assertEqual(ast[1], ['(', 'EMPTY', [], ')'])
 
     def testPolyhedralsurface(self):
         parser = WktParser(parseinfo=False)
@@ -553,9 +563,48 @@ class ParserTestCase(unittest.TestCase):
 
 
 
+class WKTParserTestCase(unittest.TestCase):
+
+    def testPoint(self):
+        p = from_wkt(empty_p0)
+        self.assertEqual(p, {'type': 'Point', 'coordinates': None})
+        self.assertRaises(NotImplementedError, from_wkt, p_zm)
+        self.assertRaises(NotImplementedError, from_wkt, point_m0)
+        p = from_wkt(p0)
+        self.assertEqual(p, {'type': 'Point', 'coordinates': [30.0, 10.0]})
+        p = from_wkt(p_z)
+        self.assertEqual(p, {'type': 'Point', 'coordinates': [1.0, 1.0, 5.0]})
+
+    def testLinestring(self):
+        p = from_wkt(empty_ls0)
+        self.assertEqual(p, {'type': 'LineString', 'coordinates': None})
+        p = from_wkt(ls0)
+        self.assertEqual(p, {'type': 'LineString', 'coordinates':
+            [[30.0, 10.0], [10.0, 30.0], [40.0, 40.0]]})
+        p = from_wkt(ls1)
+        self.assertEqual(p, {'type': 'LineString', 'coordinates':
+            [[0.0, 0.0], [0.0, 9.0], [9.0, 9.0], [9.0, 0.0], [0.0, 0.0]]})
+        p = from_wkt(ls2)
+        self.assertEqual(p['type'], 'LineString')
+        self.assertEqual(p['coordinates'][0], [3429562.6, 5799490.68])
+        self.assertEqual(p['coordinates'][-1], [3431644.53, 5798012.51])
+        self.assertEqual(len(p['coordinates']), 25)
+        p = from_wkt(ls3)
+        self.assertEqual(p, {'type': 'LineString', 'coordinates':
+            [[0.0, 0.0, 2.0],
+             [10.0, 0.0, 4.0],
+             [10.0, 10.0, 6.0],
+             [0.0, 10.0, 8.0],
+             [0.0, 0.0, 10.0]]})
+
+    def testPolygon(self):
+        p = from_wkt(poly0)
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ParserTestCase))
+    suite.addTest(unittest.makeSuite(WKTParserTestCase))
     return suite
 
 
