@@ -274,7 +274,7 @@ p_zm = "POINT ZM (1 1 5 60)"
 poly0 = "POLYGON ((30 10, 10 20, 20 40, 40 40, 30 10))"
 poly1 = """POLYGON ((35 10, 10.1 20.0, 15 40, 45 45, 35 10),
     (20 30, 35 35, 30 20, 20 30))"""
-poly2 = """'POLYGON ((
+poly2 = """POLYGON ((
                 0 0,
                 0 9,
                 9 9,
@@ -323,6 +323,39 @@ empty_mpoly1 = 'MULTIPOLYGON(EMPTY)'
 empty_gc0 = 'GEOMETRYCOLLECTION EMPTY'
 empty_gc1 = 'GEOMETRYCOLLECTION(EMPTY)'
 empty_gc2 = 'GEOMETRYCOLLECTION((EMPTY))'
+#+++
+phs0 = """POLYHEDRALSURFACE(
+((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
+((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
+((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1))
+)"""
+
+phs1 = """POLYHEDRALSURFACE Z (
+    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
+    ((0 0 0, 0 1 0, 0 1 1, 0 0 1, 0 0 0)),
+    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+    ((1 1 1, 1 0 1, 0 0 1, 0 1 1, 1 1 1)),
+    ((1 1 1, 1 0 1, 1 0 0, 1 1 0, 1 1 1)),
+    ((1 1 1, 1 1 0, 0 1 0, 0 1 1, 1 1 1))
+  )"""
+
+tin0 = """TIN (((
+                0 0 0,
+                0 0 1,
+                0 1 0,
+                0 0 0
+            )), ((
+                0 0 0,
+                0 1 0,
+                1 1 0,
+                0 0 0
+            ))
+            )"""
+tri0 = """TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"""
+
 
 
 start = 'well_known_text_representation'
@@ -339,16 +372,185 @@ class ParserTestCase(unittest.TestCase):
     def testCurvepolygon(self):
         parser = WktParser(parseinfo=True)
         ast = parser.parse(cp0, rule_name=start)
+        self.assertEqual(ast[0], 'CURVEPOLYGON')
         ast = parser.parse(cp1, rule_name=start)
+        self.assertEqual(ast[0], 'CURVEPOLYGON')
 
     def testCircularstring(self):
         parser = WktParser(parseinfo=False)
         ast = parser.parse(cs0, rule_name=start)
+        self.assertEqual(ast[0], 'CIRCULARSTRING')
         ast = parser.parse(cs1, rule_name=start)
+        self.assertEqual(ast[0], 'CIRCULARSTRING')
         ast = parser.parse(cs2, rule_name=start)
+        self.assertEqual(ast[0], 'CIRCULARSTRING')
         ast = parser.parse(cs3, rule_name=start)
+        self.assertEqual(ast[0], 'CIRCULARSTRING')
         ast = parser.parse(cs4, rule_name=start)
+        self.assertEqual(ast[0], 'CIRCULARSTRING')
         ast = parser.parse(cs5, rule_name=start)
+        self.assertEqual(ast[0], 'CIRCULARSTRING')
+
+    def testGeometrycollection(self):
+        parser = WktParser(parseinfo=False)
+        ast = parser.parse(gc0, rule_name=start)
+        self.assertEqual(ast[0], 'GEOMETRYCOLLECTION')
+        ast = parser.parse(gc1, rule_name=start)
+        self.assertEqual(ast[0], 'GEOMETRYCOLLECTION')
+        #ast = parser.parse(gc2, rule_name=start)
+        #self.assertEqual(ast[0], 'GEOMETRYCOLLECTION')
+        ast = parser.parse(gc3, rule_name=start)
+        self.assertEqual(ast[0], 'GEOMETRYCOLLECTION')
+        ast = parser.parse(gc4, rule_name=start)
+        self.assertEqual(ast[0], 'GEOMETRYCOLLECTION')
+        ast = parser.parse(gc5, rule_name=start)
+        self.assertEqual(ast[0], 'GEOMETRYCOLLECTION')
+        ast = parser.parse(gc6, rule_name=start)
+        self.assertEqual(ast[0], 'GEOMETRYCOLLECTION')
+        ast = parser.parse(empty_gc0, rule_name=start)
+        self.assertEqual(ast[0], 'GEOMETRYCOLLECTION')
+        #ast = parser.parse(empty_gc1, rule_name=start)
+        #self.assertEqual(ast[0], 'GEOMETRYCOLLECTION')
+        #ast = parser.parse(empty_gc2, rule_name=start)
+        #self.assertEqual(ast[0], 'GEOMETRYCOLLECTION')
+
+    def testLinestring(self):
+        parser = WktParser(parseinfo=False)
+        ast = parser.parse(ls0, rule_name=start)
+        self.assertEqual(ast[0], 'LINESTRING')
+        ast = parser.parse(ls1, rule_name=start)
+        self.assertEqual(ast[0], 'LINESTRING')
+        ast = parser.parse(ls2, rule_name=start)
+        self.assertEqual(ast[0], 'LINESTRING')
+        ast = parser.parse(ls3, rule_name=start)
+        self.assertEqual(ast[0], 'LINESTRING')
+        ast = parser.parse(empty_ls0, rule_name=start)
+        self.assertEqual(ast[0], 'LINESTRING')
+        #ast = parser.parse(empty_ls1, rule_name=start)
+
+    def testMulticurve(self):
+        parser = WktParser(parseinfo=False)
+        ast = parser.parse(mc0, rule_name=start)
+        self.assertEqual(ast[0], 'MULTICURVE')
+        ast = parser.parse(mc1, rule_name=start)
+        self.assertEqual(ast[0], 'MULTICURVE')
+        ast = parser.parse(mc2, rule_name=start)
+        self.assertEqual(ast[0], 'MULTICURVE')
+        #ast = parser.parse(mc3, rule_name=start)
+        #self.assertEqual(ast[0], 'MULTICURVE')
+
+    def testMultilinestring(self):
+        parser = WktParser(parseinfo=False)
+        ast = parser.parse(mls0, rule_name=start)
+        self.assertEqual(ast[0], 'MULTILINESTRING')
+        ast = parser.parse(mls1, rule_name=start)
+        self.assertEqual(ast[0], 'MULTILINESTRING')
+        ast = parser.parse(mls2, rule_name=start)
+        self.assertEqual(ast[0], 'MULTILINESTRING')
+        ast = parser.parse(mls3, rule_name=start)
+        self.assertEqual(ast[0], 'MULTILINESTRING')
+        #ast = parser.parse(mls4, rule_name=start)
+        #self.assertEqual(ast[0], 'MULTILINESTRING')
+        ast = parser.parse(mls5, rule_name=start)
+        self.assertEqual(ast[0], 'MULTILINESTRING')
+        ast = parser.parse(empty_mls0, rule_name=start)
+        self.assertEqual(ast[0], 'MULTILINESTRING')
+        ast = parser.parse(empty_mls1, rule_name=start)
+        self.assertEqual(ast[0], 'MULTILINESTRING')
+
+
+
+    def testMultipoint(self):
+        parser = WktParser(parseinfo=False)
+        ast = parser.parse(mp0, rule_name=start)
+        self.assertEqual(ast[0], 'MULTIPOINT')
+        #ast = parser.parse(mp1, rule_name=start)
+        #self.assertEqual(ast[0], 'MULTIPOINT')
+        #ast = parser.parse(mp2, rule_name=start)
+        #self.assertEqual(ast[0], 'MULTIPOINT')
+        #ast = parser.parse(mp3, rule_name=start)
+        #self.assertEqual(ast[0], 'MULTIPOINT')
+        #ast = parser.parse(mp4, rule_name=start)
+        #self.assertEqual(ast[0], 'MULTIPOINT')
+        ast = parser.parse(empty_mp0, rule_name=start)
+        self.assertEqual(ast[0], 'MULTIPOINT')
+        ast = parser.parse(empty_mp1, rule_name=start)
+        self.assertEqual(ast[0], 'MULTIPOINT')
+
+
+    def testMultipolygon(self):
+        parser = WktParser(parseinfo=False)
+        ast = parser.parse(mpoly0, rule_name=start)
+        self.assertEqual(ast[0], 'MULTIPOLYGON')
+        ast = parser.parse(mpoly1, rule_name=start)
+        self.assertEqual(ast[0], 'MULTIPOLYGON')
+        ast = parser.parse(mpoly2, rule_name=start)
+        self.assertEqual(ast[0], 'MULTIPOLYGON')
+        ast = parser.parse(mpoly3, rule_name=start)
+        self.assertEqual(ast[0], 'MULTIPOLYGON')
+        ast = parser.parse(mpoly_empty, rule_name=start)
+        self.assertEqual(ast[0], 'MULTIPOLYGON')
+        ast = parser.parse(empty_mpoly0, rule_name=start)
+        self.assertEqual(ast[0], 'MULTIPOLYGON')
+        ast = parser.parse(empty_mpoly1, rule_name=start)
+        self.assertEqual(ast[0], 'MULTIPOLYGON')
+
+    def testMultisurface(self):
+        parser = WktParser(parseinfo=False)
+        ast = parser.parse(ms0, rule_name=start)
+        self.assertEqual(ast[0], 'MULTISURFACE')
+        ast = parser.parse(ms1, rule_name=start)
+        self.assertEqual(ast[0], 'MULTISURFACE')
+
+    def testPoint(self):
+        parser = WktParser(parseinfo=False)
+        ast = parser.parse(point_m0, rule_name=start)
+        self.assertEqual(ast[0], 'POINT')
+        #ast = parser.parse(point_m1, rule_name=start)
+        #self.assertEqual(ast[0], 'POINT')
+        ast = parser.parse(p0, rule_name=start)
+        self.assertEqual(ast[0], 'POINT')
+        ast = parser.parse(p_zm, rule_name=start)
+        self.assertEqual(ast[0], 'POINT')
+        ast = parser.parse(empty_p0, rule_name=start)
+        self.assertEqual(ast[0], 'POINT')
+        ast = parser.parse(empty_p0, rule_name=start)
+        self.assertEqual(ast[0], 'POINT')
+
+    def testPolygon(self):
+        parser = WktParser(parseinfo=False)
+        ast = parser.parse(poly0, rule_name=start)
+        self.assertEqual(ast[0], 'POLYGON')
+        ast = parser.parse(poly1, rule_name=start)
+        self.assertEqual(ast[0], 'POLYGON')
+        ast = parser.parse(poly2, rule_name=start)
+        self.assertEqual(ast[0], 'POLYGON')
+        ast = parser.parse(poly3, rule_name=start)
+        self.assertEqual(ast[0], 'POLYGON')
+        ast = parser.parse(poly4, rule_name=start)
+        self.assertEqual(ast[0], 'POLYGON')
+        ast = parser.parse(empty_poly0, rule_name=start)
+        self.assertEqual(ast[0], 'POLYGON')
+        ast = parser.parse(empty_poly1, rule_name=start)
+        self.assertEqual(ast[0], 'POLYGON')
+
+    def testPolyhedralsurface(self):
+        parser = WktParser(parseinfo=False)
+        ast = parser.parse(phs0, rule_name=start)
+        self.assertEqual(ast[0], 'POLYHEDRALSURFACE')
+        ast = parser.parse(phs1, rule_name=start)
+        self.assertEqual(ast[0], 'POLYHEDRALSURFACE')
+
+    def testTin(self):
+        parser = WktParser(parseinfo=False)
+        ast = parser.parse(tin0, rule_name=start)
+        self.assertEqual(ast[0], 'TIN')
+
+    def testTriangle(self):
+        parser = WktParser(parseinfo=False)
+        ast = parser.parse(tri0, rule_name=start)
+        self.assertEqual(ast[0], 'TRIANGLE')
+
 
 
 def test_suite():
