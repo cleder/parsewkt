@@ -329,18 +329,19 @@ start = 'well_known_text_representation'
 
 class ParserTestCase(unittest.TestCase):
 
-    def compoundcurveTestCase(self):
+    def testCompoundcurve(self):
         parser = WktParser(parseinfo=False)
         ast = parser.parse(cc0, rule_name=start)
-        self.assertEqual(ast[0], 'hello')
+        self.assertEqual(ast[0], 'COMPOUNDCURVE')
         ast = parser.parse(cc1, rule_name=start)
+        self.assertEqual(ast[0], 'COMPOUNDCURVE')
 
-    def curvepolygonTestCase(self):
+    def testCurvepolygon(self):
         parser = WktParser(parseinfo=True)
         ast = parser.parse(cp0, rule_name=start)
         ast = parser.parse(cp1, rule_name=start)
 
-    def circularstringTestCase(self):
+    def testCircularstring(self):
         parser = WktParser(parseinfo=False)
         ast = parser.parse(cs0, rule_name=start)
         ast = parser.parse(cs1, rule_name=start)
@@ -348,14 +349,13 @@ class ParserTestCase(unittest.TestCase):
         ast = parser.parse(cs3, rule_name=start)
         ast = parser.parse(cs4, rule_name=start)
         ast = parser.parse(cs5, rule_name=start)
-        raise ValueError
-
 
 
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ParserTestCase))
     return suite
+
 
 if __name__ == '__main__':
     unittest.main()
