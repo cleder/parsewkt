@@ -91,9 +91,9 @@ class Semantics(WktSemantics):
 
     def geometrycollection_text_representation(self, ast):
         ast = super(Semantics, self).geometrycollection_text_representation(ast)
-        d = {'type': 'GeometryCollection', 'geometries': [] }
+        d = {'type': 'GeometryCollection', 'geometries': self._coordinates[ast] }
         print d
-        return ast
+        return d
 
     def linestring_text_body(self, ast):
         ast = super(Semantics, self).linestring_text_body(ast)
