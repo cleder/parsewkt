@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 import unittest
+
+import geojson
+import pygeoif
+
 from .parse import WktParser
 from .wkt import from_wkt
 
@@ -571,34 +575,124 @@ class WKTParserTestCase(unittest.TestCase):
         self.assertRaises(NotImplementedError, from_wkt, p_zm)
         self.assertRaises(NotImplementedError, from_wkt, point_m0)
         p = from_wkt(p0)
-        self.assertEqual(p, {'type': 'Point', 'coordinates': [30.0, 10.0]})
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        self.assertEqual(p, {'type': 'Point', 'coordinates': (30.0, 10.0)})
         p = from_wkt(p_z)
-        self.assertEqual(p, {'type': 'Point', 'coordinates': [1.0, 1.0, 5.0]})
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        self.assertEqual(p, {'type': 'Point', 'coordinates': (1.0, 1.0, 5.0)})
 
     def testLinestring(self):
         p = from_wkt(empty_ls0)
         self.assertEqual(p, {'type': 'LineString', 'coordinates': None})
         p = from_wkt(ls0)
         self.assertEqual(p, {'type': 'LineString', 'coordinates':
-            [[30.0, 10.0], [10.0, 30.0], [40.0, 40.0]]})
+            ((30.0, 10.0), (10.0, 30.0), (40.0, 40.0))})
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
         p = from_wkt(ls1)
         self.assertEqual(p, {'type': 'LineString', 'coordinates':
-            [[0.0, 0.0], [0.0, 9.0], [9.0, 9.0], [9.0, 0.0], [0.0, 0.0]]})
+            ((0.0, 0.0), (0.0, 9.0), (9.0, 9.0), (9.0, 0.0), (0.0, 0.0))})
         p = from_wkt(ls2)
         self.assertEqual(p['type'], 'LineString')
-        self.assertEqual(p['coordinates'][0], [3429562.6, 5799490.68])
-        self.assertEqual(p['coordinates'][-1], [3431644.53, 5798012.51])
+        self.assertEqual(p['coordinates'][0], (3429562.6, 5799490.68))
+        self.assertEqual(p['coordinates'][-1], (3431644.53, 5798012.51))
         self.assertEqual(len(p['coordinates']), 25)
         p = from_wkt(ls3)
         self.assertEqual(p, {'type': 'LineString', 'coordinates':
-            [[0.0, 0.0, 2.0],
-             [10.0, 0.0, 4.0],
-             [10.0, 10.0, 6.0],
-             [0.0, 10.0, 8.0],
-             [0.0, 0.0, 10.0]]})
+            ((0.0, 0.0, 2.0),
+             (10.0, 0.0, 4.0),
+             (10.0, 10.0, 6.0),
+             (0.0, 10.0, 8.0),
+             (0.0, 0.0, 10.0))})
 
     def testPolygon(self):
         p = from_wkt(poly0)
+        self.assertEqual(p, {'type': 'Polygon', 'coordinates':
+            (((30.0, 10.0), (10.0, 20.0), (20.0, 40.0),
+            (40.0, 40.0), (30.0, 10.0)),)
+            })
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        p = from_wkt(poly1)
+        self.assertEqual(p, {'type': 'Polygon', 'coordinates':
+                        (((35.0, 10.0), (10.1, 20.0),
+                        (15.0, 40.0), (45.0, 45.0),
+                        (35.0, 10.0)),
+                        ((20.0, 30.0), (35.0, 35.0),
+                        (30.0, 20.0), (20.0, 30.0)))})
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        p = from_wkt(poly2)
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        p = from_wkt(poly3)
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        p = from_wkt(poly4)
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        p = from_wkt(empty_poly0)
+        self.assertEqual(p, {'type': 'Polygon', 'coordinates': None})
+        p = from_wkt(empty_poly1)
+        self.assertEqual(p, {'type': 'Polygon', 'coordinates': None})
+
+    def testMultipoint(self):
+        p = from_wkt(empty_mp0)
+        self.assertEqual(p, {'type': 'MultiPoint', 'coordinates': None})
+        p = from_wkt(empty_mp1)
+        self.assertEqual(p, {'type': 'MultiPoint', 'coordinates': None})
+        p = from_wkt(mp0)
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        self.assertEqual(p, {'type': 'MultiPoint', 'coordinates':
+            ((10.0, 40.0), (40.0, 30.0), (20.0, 20.0), (30.0, 10.0))})
+
+    def testMultilinestring(self):
+        p = from_wkt(empty_mls0)
+        self.assertEqual(p, {'type': 'MultiLineString', 'coordinates': None})
+        p = from_wkt(empty_mls1)
+        self.assertEqual(p, {'type': 'MultiLineString', 'coordinates': None})
+        p = from_wkt(mls0)
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        self.assertEqual(p, {'type': 'MultiLineString', 'coordinates':
+                (((10.0, 10.0), (20.0, 20.0), (10.0, 40.0)),
+                ((40.0, 40.0), (30.0, 30.0), (40.0, 20.0), (30.0, 10.0)))})
+        p = from_wkt(mls0)
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        p = from_wkt(mls0)
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        p = from_wkt(mls1)
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        p = from_wkt(mls3)
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        #p = from_wkt(mls4)
+        #self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        #p = from_wkt(mls5)
+        #self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+
+    def testMultipolygon(self):
+        p = from_wkt(mpoly_empty)
+        self.assertEqual(p, {'type': 'MultiPolygon', 'coordinates': None})
+        p = from_wkt(empty_mpoly0)
+        self.assertEqual(p, {'type': 'MultiPolygon', 'coordinates': None})
+        p = from_wkt(empty_mpoly1)
+        self.assertEqual(p, {'type': 'MultiPolygon', 'coordinates': None})
+        p = from_wkt(mpoly0)
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        self.assertEqual(p, {'type': 'MultiPolygon', 'coordinates':
+            ((((30.0, 20.0), (10.0, 40.0), (45.0, 40.0), (30.0, 20.0)),),
+            (((15.0, 5.0), (40.0, 10.0), (10.0, 20.0),
+            (5.0, 10.0), (15.0, 5.0)),))})
+        p = from_wkt(mpoly0)
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        p = from_wkt(mpoly1)
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        p = from_wkt(mpoly2)
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        p = from_wkt(mpoly3)
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+
+
+    def testGeometrycollection(self):
+        p = from_wkt(empty_gc0)
+        self.assertEqual(p, {'type': 'GeometryCollection', 'coordinates': None})
+
+        p = from_wkt(gc0)
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+
 
 
 def test_suite():

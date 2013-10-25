@@ -53,7 +53,11 @@ setup(name='parsewkt',
           # -*- Extra requirements: -*-
           'grako',
       ],
-      tests_require=['pytest'],
+      tests_require=[
+        'pytest',
+        'pygeoif',
+        'geojson',
+      ],
       cmdclass = {'test': PyTest},
       entry_points="""
       # -*- Entry points: -*-
