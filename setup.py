@@ -56,7 +56,6 @@ setup(name='parsewkt',
       tests_require=[
         'pytest',
         'pygeoif',
-        'geojson',
       ],
       cmdclass = {'test': PyTest},
       entry_points="""

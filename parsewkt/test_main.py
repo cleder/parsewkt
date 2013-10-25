@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import unittest
 
-import geojson
 import pygeoif
 
 from .parse import WktParser
@@ -671,7 +670,8 @@ class WKTParserTestCase(unittest.TestCase):
         p = from_wkt(empty_mpoly1)
         self.assertEqual(p, {'type': 'MultiPolygon', 'coordinates': None})
         p = from_wkt(mpoly0)
-        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        print p
+        #self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
         self.assertEqual(p, {'type': 'MultiPolygon', 'coordinates':
             ((((30.0, 20.0), (10.0, 40.0), (45.0, 40.0), (30.0, 20.0)),),
             (((15.0, 5.0), (40.0, 10.0), (10.0, 20.0),
@@ -688,9 +688,20 @@ class WKTParserTestCase(unittest.TestCase):
 
     def testGeometrycollection(self):
         p = from_wkt(empty_gc0)
-        self.assertEqual(p, {'type': 'GeometryCollection', 'coordinates': None})
-
+        self.assertEqual(p, {'type': 'GeometryCollection', 'geometries': None})
         p = from_wkt(gc0)
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        p = from_wkt(gc1)
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        p = from_wkt(gc2)
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        p = from_wkt(gc3)
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        p = from_wkt(gc4)
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        p = from_wkt(gc5)
+        self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
+        p = from_wkt(gc6)
         self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
 
 
