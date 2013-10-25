@@ -670,7 +670,6 @@ class WKTParserTestCase(unittest.TestCase):
         p = from_wkt(empty_mpoly1)
         self.assertEqual(p, {'type': 'MultiPolygon', 'coordinates': None})
         p = from_wkt(mpoly0)
-        print p
         #self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
         self.assertEqual(p, {'type': 'MultiPolygon', 'coordinates':
             ((((30.0, 20.0), (10.0, 40.0), (45.0, 40.0), (30.0, 20.0)),),
