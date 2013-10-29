@@ -745,7 +745,7 @@ class SpeedTest(unittest.TestCase):
         #print('ParseWKT failures:', pwktf)
         num_loops = 10
         t0 = time()
-        for i in xrange(1, num_loops):
+        for i in range(1, num_loops):
             for g in arr:
                 try:
                     parse_wkt(g)
@@ -753,7 +753,7 @@ class SpeedTest(unittest.TestCase):
                     pwktf +=1
         pwktt = time() - t0
         t0 = time()
-        for i in xrange(1, num_loops):
+        for i in range(1, num_loops):
             for g in arr:
                 try:
                     pygeoif.from_wkt(g)
@@ -763,7 +763,7 @@ class SpeedTest(unittest.TestCase):
         #print('Pygeoif time:', pygit)
         #print('ParseWKT time:', pwktt)
         #print('wkt/re:', pwktt/pygit)
-        self.assertTrue(pwktt/pygit > 0)
+        self.assertTrue(pwktt/pygit > 30)
 
 
 def test_suite():
