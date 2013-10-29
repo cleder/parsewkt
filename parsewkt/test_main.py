@@ -763,7 +763,7 @@ class SpeedTest(unittest.TestCase):
         #print('Pygeoif time:', pygit)
         #print('ParseWKT time:', pwktt)
         #print('wkt/re:', pwktt/pygit)
-        self.assertTrue(pwktt/pygit > 30)
+        self.assertTrue(pwktt/pygit > 10)
 
 
 def test_suite():
