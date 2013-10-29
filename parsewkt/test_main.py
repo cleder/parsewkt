@@ -4,7 +4,7 @@ import unittest
 import pygeoif
 
 from .parse import WktParser
-from .wkt import from_wkt
+from .wkt import from_wkt, Semantics
 
 cc0 = "COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,0 1))"
 cc1 = """COMPOUNDCURVE(CIRCULARSTRING(
@@ -703,6 +703,67 @@ class WKTParserTestCase(unittest.TestCase):
         p = from_wkt(gc6)
         self.assertEqual(p, pygeoif.as_shape(p).__geo_interface__)
 
+class SpeedTest(unittest.TestCase):
+
+    def test_speed(self):
+        def parse_wkt(text):
+            ast = parser.parse(text, rule_name='well_known_text_representation', semantics=semantics)
+            if isinstance(ast, dict):
+                return ast
+            else:
+                raise NotImplementedError
+        from time import time
+        arr = [
+            #tri0, tin0, phs1, phs0,
+            #empty_gc0, empty_gc1, empty_gc2,
+            #empty_mpoly0, empty_mpoly1, empty_poly0, empty_poly1,
+            #empty_mls1, empty_mls0, empty_ls1, empty_ls0, empty_mp0,
+            #empty_mp1, empty_p0, empty_p1, mpoly_empty,
+            poly0, poly1, poly2, poly3,
+            poly4, point_m0, point_m1, p0, p_zm, p_z, ms0, ms1,
+            mpoly0, mpoly1, mpoly2, mpoly3, mp0, mp1, mp2, mp3, mp4,
+            mls0, mls1, mls2, mls3, mls4, mls5,
+            #mc0, mc1, mc2, mc3,
+            ls0, ls1, ls2, ls3, gc0, gc1, gc2, gc3, gc4, gc5, gc6,
+            #cs0, cs1,
+            #cs2, cs3, cs4, cs5, cp0, cp1, cc0, cc1
+            ]
+        parser = WktParser(parseinfo=False)
+        semantics=Semantics()
+        pwktf = 0
+        pgif = 0
+        for g in arr:
+            try:
+                from_wkt(g)
+            except:
+                pwktf +=1
+            try:
+                pygeoif.from_wkt(g)
+            except:
+                pgif +=1
+        #print('Pygeoif Failures:', pgif)
+        #print('ParseWKT failures:', pwktf)
+        num_loops = 10
+        t0 = time()
+        for i in xrange(1, num_loops):
+            for g in arr:
+                try:
+                    parse_wkt(g)
+                except:
+                    pwktf +=1
+        pwktt = time() - t0
+        t0 = time()
+        for i in xrange(1, num_loops):
+            for g in arr:
+                try:
+                    pygeoif.from_wkt(g)
+                except:
+                    pgif +=1
+        pygit = time() - t0
+        #print('Pygeoif time:', pygit)
+        #print('ParseWKT time:', pwktt)
+        #print('wkt/re:', pwktt/pygit)
+        self.assertTrue(pwktt/pygit > 0)
 
 
 def test_suite():
@@ -710,6 +771,9 @@ def test_suite():
     suite.addTest(unittest.makeSuite(ParserTestCase))
     suite.addTest(unittest.makeSuite(WKTParserTestCase))
     return suite
+
+
+
 
 
 if __name__ == '__main__':

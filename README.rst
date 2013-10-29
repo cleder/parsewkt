@@ -29,7 +29,7 @@ dictionary for the following types:
 - GEOMETRYCOLLECTION
 
 The parser can parse the following types but they are currently not
-translated into python object:
+translated into python objects:
 
 - COMPOUNDCURVE
 - CIRCULARSTRING
