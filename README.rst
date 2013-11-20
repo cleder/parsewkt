@@ -39,6 +39,16 @@ translated into python objects:
 - TIN
 - TRIANGLE
 
+Rationale
+=========
+
+The parser was written to have a clean and complete parser for WKT.
+Other WKT to python parsers use regular expression to do the same and are
+more or less complete.
+I wanted to have a reference implementation that could handle any kind
+of valid WKT that you throw at it. You can also use it as a reference
+if you want to write your own parser with grako.
+
 Usage
 ======
 
@@ -51,7 +61,12 @@ Usage
     ...           MULTIPOLYGON(((0 0, 0 9, 9 9, 9 0, 0 0), (5 5, 5 6, 6 6, 5 5)))
     ...         )"""
     >>> from_wkt(gc)
-    {'type': 'GeometryCollection', 'geometries': ({'type': 'Point', 'coordinates': (99.0, 98.0)}, {'type': 'LineString', 'coordinates': ((1.0, 1.0), (3.0, 3.0))}, {'type': 'Polygon', 'coordinates': (((0.0, 0.0), (0.0, 1.0), (1.0, 1.0), (0.0, 0.0)),)}, {'type': 'Polygon', 'coordinates': (((0.0, 0.0), (0.0, 9.0), (9.0, 9.0), (9.0, 0.0), (0.0, 0.0)), ((5.0, 5.0), (5.0, 6.0), (6.0, 6.0), (5.0, 5.0)))}, {'type': 'MultiPolygon', 'coordinates': ((((0.0, 0.0), (0.0, 9.0), (9.0, 9.0), (9.0, 0.0), (0.0, 0.0)), ((5.0, 5.0), (5.0, 6.0), (6.0, 6.0), (5.0, 5.0))),)})}
+    {'type': 'GeometryCollection', 'geometries': (
+        {'type': 'Point', 'coordinates': (99.0, 98.0)},
+        {'type': 'LineString', 'coordinates': ((1.0, 1.0), (3.0, 3.0))},
+        {'type': 'Polygon', 'coordinates': (((0.0, 0.0), (0.0, 1.0), (1.0, 1.0), (0.0, 0.0)),)},
+        {'type': 'Polygon', 'coordinates': (((0.0, 0.0), (0.0, 9.0), (9.0, 9.0), (9.0, 0.0), (0.0, 0.0)), ((5.0, 5.0), (5.0, 6.0), (6.0, 6.0), (5.0, 5.0)))},
+        {'type': 'MultiPolygon', 'coordinates': ((((0.0, 0.0), (0.0, 9.0), (9.0, 9.0), (9.0, 0.0), (0.0, 0.0)), ((5.0, 5.0), (5.0, 6.0), (6.0, 6.0), (5.0, 5.0))),)})}
 
     >>> tri = """TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"""
     >>> from_wkt(tri)
@@ -61,3 +76,11 @@ Usage
         raise NotImplementedError
     NotImplementedError
 
+License
+=======
+
+**parsewkt** is Copyright (C) 2013 by Christian Ledermann
+
+You may use the tool under the terms of the BSD_-style license described in the enclosed **LICENSE.txt** file.
+
+.. _BSD: http://en.wikipedia.org/wiki/BSD_licenses#2-clause_license_.28.22Simplified_BSD_License.22_or_.22FreeBSD_License.22.29
